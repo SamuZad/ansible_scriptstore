@@ -1,0 +1,9 @@
+---
+- name: Updating CI/CD tool
+  hosts: HOST_NAME
+  user: USER_NAME
+  vars:
+    path: /home/USER/runtime/cicd
+  roles:
+    - role: cicd_updater
+  become: true

@@ -1,0 +1,32 @@
+---
+- name: Setting up SSH
+  import_tasks: ssh.yml
+  become: true
+
+- name: Configuring file system
+  import_tasks: file_system.yml
+  become: true
+
+- name: Creating technical users
+  import_tasks: users.yml
+  become: true
+
+- name: Installing components
+  import_tasks: install.yml
+  become: true
+
+- name: Configuring Docker
+  import_tasks: dockerconf.yml
+  become: true
+
+- name: Configuring certificates
+  import_tasks: certs.yml
+  become: true
+
+- name: Configuring public keys
+  import_tasks: pubkey.yml
+  become: true
+
+- name: Setting up USER user
+  import_tasks: USER.yml
+  become: true

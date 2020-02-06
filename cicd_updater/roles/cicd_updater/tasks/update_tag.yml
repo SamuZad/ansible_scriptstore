@@ -1,0 +1,6 @@
+---
+- name: Update tag of Docker image
+  lineinfile:
+    path: "{{ path }}/{{ component }}/run.sh"
+    regexp: '^(.*)image/cicd(.*)$'
+    line: "{{ image.user_input }}"

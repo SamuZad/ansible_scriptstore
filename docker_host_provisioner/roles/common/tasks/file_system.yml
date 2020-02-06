@@ -1,0 +1,52 @@
+---
+- name: Creating directories for Docker
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0750'
+  with_items:
+    - /var/lib/docker
+    - /home/USER
+    - /home/USER/logs
+    - /home/USER/tmp
+
+- name: Creating volume group for Docker
+  lvg:
+    vg: docker_vg
+    pvs: /dev/sdb
+    state: present
+
+- name: Creating logical volumes for Docker
+  lvol:
+    vg: docker_vg
+    lv: "{{ item.lv }}"
+    size: "{{ item.size }}"
+    state: present
+  with_items:
+    - { lv: docker_cache, size: 20g }
+    - { lv: USER_home, size: 10g }
+    - { lv: USER_logs, size: 10g }
+    - { lv: USER_tmp, size: 5g }
+
+- name: Creating file system for Docker
+  filesystem:
+    fstype: xfs
+    dev: "{{ item }}"
+  with_items:
+    - /dev/docker_vg/docker_cache
+    - /dev/docker_vg/USER_home
+    - /dev/docker_vg/USER_logs
+    - /dev/docker_vg/USER_tmp
+
+- name: Mounting partitions for Docker
+  mount:
+    src: "{{ item.src }}"
+    path: "{{ item.path }}"
+    fstype: xfs
+    opts: defaults,nodev
+    state: mounted
+  with_items:
+    - { src: /dev/docker_vg/docker_cache, path: /var/lib/docker }
+    - { src: /dev/docker_vg/USER_home, path: /home/USER }
+    - { src: /dev/docker_vg/USER_logs, path: /home/USER/logs }
+    - { src: /dev/docker_vg/USER_tmp, path: /home/USER/tmp }

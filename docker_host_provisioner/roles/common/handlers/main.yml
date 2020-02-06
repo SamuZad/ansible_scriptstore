@@ -1,0 +1,11 @@
+---
+- name: restart ssh
+  service: 
+    name: ssh
+    state: restarted
+
+- name: restart docker
+  systemd:
+    name: docker
+    state: restarted
+    daemon_reload: yes

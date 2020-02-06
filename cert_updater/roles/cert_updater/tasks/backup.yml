@@ -1,0 +1,13 @@
+---
+- name: Creating backup directory for remote host
+  local_action:
+    module: file
+    path: "{{ playbook_dir }}/backup/{{ inventory_hostname }}"
+    state: directory
+  become: no
+
+- name: Backing up certificates on remote host
+  synchronize:
+    mode: pull
+    src: /etc/pki/ca-trust/source/anchors/
+    dest: "{{ playbook_dir }}/backup/{{ inventory_hostname }}"

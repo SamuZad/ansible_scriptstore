@@ -1,0 +1,24 @@
+all:
+  children:
+    dockerhosts:
+      children:
+        dev:
+          hosts:
+            HOST_NAME:
+              ansible_host: HOST_IP
+          vars:
+            cert_env: sandbox
+            public_key: https://ARTIFACTREPO/repository/install/cicd/cicd.dev/id_rsa.pub
+            dockerconf_additional_line: Environment="****"
+        test:
+          hosts:
+          vars:
+            cert_env: sandbox
+            public_key: https://ARTIFACTREPO/repository/install/cicd/cicd/id_rsa.pub
+            dockerconf_additional_line: Environment="NO_PROXY=****"
+        prod:
+          hosts:
+          vars:
+            cert_env: prod
+            public_key: https://ARTIFACTREPO/repository/install/cicd/cicd/id_rsa.pub
+            dockerconf_additional_line: Environment="NO_PROXY=****"

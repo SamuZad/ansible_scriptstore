@@ -1,0 +1,8 @@
+---
+- name: Backing up all certificates
+  import_tasks: backup.yml
+  when: backup == "yes" or backup == "y"
+
+- name: Updating all certificates
+  import_tasks: update.yml
+  when: verified == "yes" or verified == "y"

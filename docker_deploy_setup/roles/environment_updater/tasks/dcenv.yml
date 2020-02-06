@@ -1,0 +1,8 @@
+---
+- name: Updating .dcenv
+  template:
+    src: "{{ playbook_dir }}/roles/environment_updater/templates/.dcenv"
+    dest: /home/USER/.dcenv
+    owner: USER
+    group: dockergrp
+    mode: "0600"

@@ -1,0 +1,20 @@
+---
+- name: Creating Jenkins worker node
+  hosts: jenkins
+  user: USER_NAME
+  vars_prompt:
+    - name: verified
+      prompt: "Are you sure you want to install the node {{ node_name }}? (yes/no)"
+      default: "no" 
+      private: no
+    - name: running
+      prompt: "Do you want to run the worker node after installation? (yes/no)"
+      private: no
+      default: "no"
+  roles:
+    - role: node_creator
+      vars:
+        - node_name: NODE_NAME
+        - proxy_info: PROXY_INFO
+        - image_name: IMAGE_NAME
+        - additional_lines: ADDITIONAL_LINES

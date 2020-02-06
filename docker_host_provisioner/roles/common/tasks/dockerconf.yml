@@ -1,0 +1,17 @@
+---
+- name: Configuring proxy for Docker
+  block:
+    - name: Creating docker.service.d directory
+      file:
+        path: /etc/systemd/system/docker.service.d
+        state: directory
+        mode: '0750'
+    - name: Configuring proxy for Docker
+      blockinfile:
+        path: /etc/systemd/system/docker.service.d/http-proxy.conf
+        create: yes
+        block: |
+          [Service]
+          Environment="HTTP_PROXY=****"
+          Environment="HTTPS_PROXY=****"
+          {{ dockerconf_additional_line }}

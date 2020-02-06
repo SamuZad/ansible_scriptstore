@@ -1,0 +1,4 @@
+---
+- name: Pull new Docker image
+  shell:
+    cmd: "sudo docker pull {{ image.user_input }}"

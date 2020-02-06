@@ -1,0 +1,37 @@
+---
+- name: Creating .ssh directory for USER
+  file:
+    path: /home/USER/.ssh
+    state: directory
+
+- name: Downloading public key
+  get_url:
+    url: "{{ public_key }} "
+    dest: /home/USER/.ssh/id_rsa.pub
+    validate_certs: no
+    owner: USER
+  environment:
+    https_proxy: ****
+
+- name: Adding Key to Authorized Keys
+  authorized_key:
+    user: USER
+    state: present
+    key: "{{ public_key }}"
+    validate_certs: no
+  environment:
+    https_proxy: ****
+
+- name: Changing permissions for Authorized Keys
+  file:
+    state: file
+    path: /home/USER/.ssh/authorized_keys
+    mode: '0400'
+    owner: USER
+
+- name: Changing permissions for Authorized Keys
+  file:
+    state: directory
+    path: /home/USER/.ssh/
+    mode: '0700'
+    owner: USER

@@ -1,0 +1,22 @@
+---
+- name: Creating logical volume for worker node
+  lvol:
+    vg: docker_vg
+    lv: data_workers
+    size: 100g
+    state: present
+
+- name: Creating directory structure for worker node
+  file:
+    path: /data/docker/workers
+    state: directory
+    owner: dockerusr
+    group: dockergrp
+
+- name: Mounting partition for worker node
+  mount:
+    src: /dev/mapper/docker_vg-data_workers
+    path: /data/docker/workers
+    fstype: xfs
+    opts: defaults,nodev
+    state: mounted

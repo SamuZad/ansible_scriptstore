@@ -1,0 +1,42 @@
+---
+- name: Creating dockergrp group
+  group:
+    name: dockergrp
+    gid: 8000
+
+- name: Creating USER technical user 
+  user:
+    name: USER
+    group: dockergrp
+    uid: 8000
+    password: "{{ USER_password  | password_hash('sha512') }}"
+    create_home: no
+    home: /home/USER
+
+- name: Creating dockerusr technical user
+  user:
+    name: dockerusr
+    group: dockergrp
+    uid: 8001
+    password: "{{ dockerusr_password | password_hash('sha512') }}"
+
+- name: Setting password expiry for technical users
+  shell:
+    cmd: chage -I -1 -m 0 -M 99999 -E -1 "{{ item }}"
+  with_items:
+    - USER
+    - dockerusr
+
+- name: Configuring /etc/sudoers
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    line: "USER ALL=NOPASSWD: /bin/systemctl daemon-reload, /bin/systemctl restart docker, /usr/bin/docker-compose, /bin/docker, /sbin/service docker"
+
+- name: Setting ownership of Docker directories
+  file:
+    path: /home/USER
+    state: directory
+    recurse: yes
+    owner: USER
+    group: dockergrp

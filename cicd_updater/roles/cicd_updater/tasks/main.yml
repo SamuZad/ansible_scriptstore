@@ -1,0 +1,52 @@
+---
+- name: Registering directories in CI/CD runtime
+  shell: "ls {{ path }}"
+  register: available_directories
+
+- name: Generating output for prompt
+  shell: "ls {{ path }} | nl"
+  register: output
+
+- pause:
+    prompt: "This is the list of available components:\n{{ output.stdout }}\nEnter the number of the component you want to update"
+  register: selected_component
+
+- name: Registering selected component
+  set_fact:
+    component: "{{ item.1}}"
+  when: item.0 + 1 == selected_component.user_input | int
+  with_indexed_items:
+    - "{{ available_directories.stdout_lines }}"
+
+- name: Registering current image of selected component
+  shell:
+    cmd: "grep image/cicd {{ path }}/{{ component }}/run.sh"
+  register: current_image
+
+- pause:
+    prompt: "The current image of {{ component }} is:\n\n{{ current_image.stdout }}.\n\nPlease enter the full name and tag of the image you want to use for this update"
+  register: image
+
+- pause:
+    prompt: "Please confirm that you want proceed with this update:\n\nCOMPONENT: {{ component }}\nCURRENT IMAGE:\t{{ current_image.stdout }}\nNEW IMAGE:\t{{ image.user_input }}\n\n([y]es/[n]o)"
+  register: verified
+
+- name: Updating run.sh
+  import_tasks: update_tag.yml
+  become_user: USER
+  when: verified.user_input == "yes" or verified.user_input == "y"
+
+- name: Pull new Docker image
+  import_tasks: pull_image.yml
+  become_user: USER
+  when: verified.user_input == "yes" or verified.user_input == "y"
+
+- name: Remove running container
+  import_tasks: remove_container.yml
+  become_user: USER
+  when: verified.user_input == "yes" or verified.user_input == "y"
+
+- name: Start new container
+  import_tasks: start_new_container.yml
+  become_user: USER
+  when: verified.user_input == "yes" or verified.user_input == "y"

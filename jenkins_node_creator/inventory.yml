@@ -1,0 +1,6 @@
+all:
+  children:
+    jenkins:
+      hosts:
+        sandbox_build:
+          ansible_host: IP_ADDRESS

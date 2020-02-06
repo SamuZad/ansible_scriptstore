@@ -1,0 +1,49 @@
+---
+- name: Creating directory structure for specific worker node
+  file:
+    path: "/data/docker/workers/{{ node_name }}/workspace"
+    state: directory
+
+- name: Changing ownership of directory
+  file:
+    path: "/data/docker/workers/{{ node_name }}"
+    state: directory
+    owner: dockerusr
+    group: dockergrp
+    recurse: yes
+
+- name: Creating directory structure for storing container runtime information
+  file:
+    path: "/home/USER/runtime/cicd/{{ node_name }}"
+    state: directory
+    owner: USER
+    group: dockergrp
+
+- name: Copying RSA key for worker node
+  copy:
+    src: "{{playbook_dir}}/roles/node_creator/files/id_rsa.pub"
+    dest: "/home/USER/runtime/cicd/{{ node_name }}/id_rsa.pub"
+    mode: "0600"
+    owner: dockerusr
+    group: dockergrp
+
+- name: Copying shell scripts for worker node
+  block:
+    - name: Copying run.sh
+      template:
+        src: "{{playbook_dir}}/roles/node_creator/templates/run.sh"
+        dest: "/home/USER/runtime/cicd/{{ node_name }}/run.sh"
+        owner: USER
+        group: dockergrp
+        mode: "0750"
+    - name: Copying rm.sh
+      template:
+        src: "{{playbook_dir}}/roles/node_creator/templates/rm.sh"
+        dest: "/home/USER/runtime/cicd/{{ node_name }}/rm.sh"
+        owner: USER
+        group: dockergrp
+        mode: "0750"
+
+- name: Starting up worker node
+  shell: "/home/USER/runtime/cicd/{{ node_name }}/run.sh"
+  when: running == "yes" or running == "y"

@@ -1,0 +1,10 @@
+---
+- name: Setting up file system
+  import_tasks: file_system.yml
+  become: true
+  when: verified == "yes" or verified == "y"
+
+- name: Setting up worker node
+  import_tasks: workernode.yml
+  become: true
+  when: verified == "yes" or verified == "y"

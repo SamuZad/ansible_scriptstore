@@ -1,0 +1,5 @@
+---
+- name: Remove running container
+  shell:
+    chdir: "{{ path }}/{{ component }}"
+    cmd: ./rm.sh

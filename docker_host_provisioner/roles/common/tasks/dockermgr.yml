@@ -1,0 +1,45 @@
+---
+- name: Setting up USER user
+  block:
+    - name: Configure proxy for USER
+      blockinfile:
+        path: /home/USER/.bashrc
+        create: yes
+        block: |
+          export http_proxy=****
+          export https_proxy=****
+    - name: Creating /home/USER/bin directory
+      file:
+        path: /home/USER/bin
+        state: directory
+    - name: Downloading sample .dcenv from registry
+      get_url:
+        url: https://ARTIFACTREPO/repository/install/docker/.dcenv
+        dest: /home/USER/.dcenv
+        validate_certs: no
+      environment:
+        https_proxy: ****
+    - name: Log into Nexus registry with Docker
+      shell: "docker login -u USER -p {{ USER_nexus_password }} *****"
+    - name: Downloading DockerCTL from registry
+      get_url:
+        url: https://ARTIFACTREPO/repository/runtime/docker.tgz
+        dest: /home/USER/bin/docker.tgz
+        validate_certs: no
+      environment:
+        https_proxy: ****
+    - name: Unarchive docker.tgz
+      unarchive:
+        src: /home/USER/bin/docker.tgz
+        dest: /home/USER/bin
+        remote_src: yes
+    - name: Changing mode on /home/USER/bin directory
+      file:
+        path: /home/USER/bin
+        mode: '0755'
+        recurse: yes
+    - name: Remove docker.tgz
+      file:
+        path: /home/USER/bin/docker.tgz
+        state: absent
+  become_user: USER

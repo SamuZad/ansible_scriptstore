@@ -1,0 +1,13 @@
+---
+- name: Setting up proxy and Nexus registry for USER technical user
+  block:
+    - name: Configure proxy for USER
+      blockinfile:
+        path: /home/USER/.bashrc
+        create: yes
+        block: |
+          export http_proxy=****
+          export https_proxy=****
+    - name: Log into Nexus registry with Docker
+      shell: "docker login -u USER -p {{ USER_nexus_password }} ****"
+  become_user: USER

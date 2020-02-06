@@ -1,0 +1,5 @@
+---
+- name: Start updated service
+  shell:
+    chdir: "{{ path }}/{{ component }}"
+    cmd: ./run.sh

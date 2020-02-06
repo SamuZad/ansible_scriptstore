@@ -1,0 +1,8 @@
+---
+- name: Updating certificates
+  synchronize:
+    src: "{{ playbook_dir }}"/roles/cert_update/files/
+    dest: /etc/pki/ca-trust/source/anchors/
+
+- name: Updating CA-trust
+  shell: update-ca-trust

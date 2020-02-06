@@ -1,0 +1,16 @@
+---
+- name: Setting up SSH
+  block:
+    - name: Allow TCP Forwarding
+      replace:
+        path: /etc/ssh/sshd_config
+        regexp: '^AllowTcpForwarding.*'
+        replace: 'AllowTcpForwarding yes'
+    - name: Allow X11 Forwarding
+      replace:
+        path: /etc/ssh/sshd_config
+        regexp: '^X11Forwarding.*'
+        replace: 'X11Forwarding yes'
+    - name: Restart SSH
+      shell: systemctl restart sshd
+#      notify: restart ssh

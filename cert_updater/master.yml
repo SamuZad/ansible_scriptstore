@@ -1,0 +1,16 @@
+---
+- name: Updating all certificates
+  hosts: HOST_NAME
+  user: USER_NAME
+  vars_prompt:
+    - name: verified
+      prompt: "Are you sure you want to update the certificates on the selected host(s)? ([y]es/[n]o)"
+      default: "no"
+      private: no
+    - name: backup
+      prompt: "Do you want to backup the currently valid certificates? ([y]es/[n]o)"
+      default: "no"
+      private: no
+  roles:
+    - role: cert_updater
+  become: yes

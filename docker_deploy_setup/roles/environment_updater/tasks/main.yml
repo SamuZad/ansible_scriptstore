@@ -1,0 +1,20 @@
+---
+- name: Copying .dcenv
+  import_tasks: dcenv.yml
+  become: true
+
+- name: Setting up proxy for Docker
+  import_tasks: proxy.yml
+  become: true
+
+- name: Setting up certificates
+  import_tasks: certs.yml
+  become: true
+
+- name: Setting up USER technical user
+  import_tasks: USER.yml
+  become: true
+
+- name: Setting up public keys for Jenkins
+  import_tasks: pubkey.yml
+  become: true

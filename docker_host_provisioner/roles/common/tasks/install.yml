@@ -1,0 +1,27 @@
+---
+- name: Installing necessary packages
+  yum:
+    name:
+      - docker
+      - java-1.8.0-openjdk
+      - git
+      - telnet
+    state: present
+
+- name: Enable Docker on startup
+  service:
+    name: docker.service
+    state: started
+    enabled: yes
+
+- name: Downloading Docker-Compose
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+    mode: '0755'
+    validate_certs: no
+  with_items:
+    - { url: "https://ARTIFACTREPO/repository/install/docker/docker-compose", dest: /usr/bin/docker-compose }
+    - { url: "https://ARTIFACTREPO/repository/install/docker/docker-compose", dest: /usr/bin/docker-compose-orig }
+  environment:
+    https_proxy: ****

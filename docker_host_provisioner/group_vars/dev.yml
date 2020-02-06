@@ -1,0 +1,4 @@
+---
+dockerusr_password: DUMMY_PASSWORD1
+USER_password: DUMMY_PASSWORD2
+USER_nexus_password: DUMMY_PASSWORD3

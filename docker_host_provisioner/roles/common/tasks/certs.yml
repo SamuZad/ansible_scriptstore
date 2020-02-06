@@ -1,0 +1,29 @@
+---
+- name: Getting intermediate certificates
+  get_url:
+    url: "https://ARTIFACTREPO/repository/install/cicd/ssl/{{ cert_env }}_subca.cer"
+    dest: "/etc/pki/ca-trust/source/anchors/{{ cert_env }}_subca.cer"
+    validate_certs: no
+  environment:
+    https_proxy: ****
+
+- name: Configuring certificates
+  get_url:
+    url: https://ARTIFACTREPO/repository/install/cicd/ssl/SSL.crt
+    dest: /etc/pki/ca-trust/source/anchors/SSL.crt
+    validate_certs: no
+  environment:
+    https_proxy: ****
+
+- name: Updating CA-trust
+  shell: |
+    update-ca-trust
+    systemctl daemon-reload
+    systemctl restart docker
+#  notify:
+#    - restart docker
+
+- name: Change group of Docker socket
+  file:
+    path: /var/run/docker.sock
+    group: dockergrp

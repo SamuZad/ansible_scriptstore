@@ -1,0 +1,6 @@
+---
+- name: Provisioning Docker Host
+  hosts: HOST_NAME
+  user: USER_NAME
+  roles:
+    - role: common

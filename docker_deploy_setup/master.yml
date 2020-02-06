@@ -1,0 +1,6 @@
+---
+- name: Reconfiguring Docker environment
+  hosts: HOST_NAME
+  user: USER_NAME
+  roles:
+    - role: environment_updater
